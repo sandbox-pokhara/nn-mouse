@@ -2,6 +2,10 @@
 
 Neural network based humanized mouse movements. The models in this projects are from https://github.com/DaiCapra/Natural-Mouse-Movements-Neural-Networks
 
+## Demo
+
+![Demo](output.gif)
+
 ## Installation
 
 You can install the package via pip:
