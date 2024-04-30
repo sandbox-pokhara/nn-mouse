@@ -18,7 +18,9 @@ def predict(model: Net, x: float, y: float):
     return outputs
 
 
-def get_path(x: int, y: int, x1: int, y1: int, w: int, h: int):
+def get_path(
+    x: int, y: int, x1: int, y1: int, w: int, h: int
+) -> List[Tuple[float, float, float]]:
     """
     Returns a list of tuple (x, y, t) where x, y is
     the location and t is the time to stay on each location
@@ -31,9 +33,19 @@ def get_path(x: int, y: int, x1: int, y1: int, w: int, h: int):
     :param h: height of the monitor
     """
     dx, dy = (x1 - x) / w, (y1 - y) / h
+    if dx == 0 and dy == 0:
+        return []
+
+    # the model does not work properly for
+    # small distances, so scale dx, dy if
+    # distance is too small
+    dist = (dx**2 + dy**2) ** 0.5
+    f = 1 / dist if dist < 0.2 else 1
+
+    dx, dy = f * dx, f * dy
     path = predict(path_model, dx, dy)
     time = predict(time_model, dx, dy)
     output: List[Tuple[float, float, float]] = []
     for (x2, y2), [t] in zip(path[0], time[0]):
-        output.append((x + x2 * w, y + y2 * h, t / 100_000))
+        output.append((x + x2 / f * w, y + y2 / f * h, t / 100_000 / f))
     return output
