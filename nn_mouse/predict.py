@@ -48,4 +48,5 @@ def get_path(
     output: List[Tuple[float, float, float]] = []
     for (x2, y2), [t] in zip(path[0], time[0]):
         output.append((x + x2 / f * w, y + y2 / f * h, t / 100_000 / f))
+    output.append((x1, y1, 0))
     return output
